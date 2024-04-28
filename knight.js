@@ -25,7 +25,7 @@ function knightMoves(start, end) {
     const visited = [];
 
     while (queue.length) {
-        // Dequeues co-ordinate from from of queue.
+        // Dequeues co-ordinate from front of queue.
         const current = queue.shift();
 
         // Marks the co-ordinate as visited and gets all possible moves.
