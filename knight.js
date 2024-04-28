@@ -2,7 +2,7 @@ import Graph from "./graph.js";
 
 const graph = new Graph;
 
-// Gets all possible moves available to passed array
+// Gets all possible moves available to passed array.
 function getMoves(array) {
     const allMoves = [];
 
@@ -18,32 +18,53 @@ function getMoves(array) {
     return allMoves.filter((item) => item[0] <= 7 && item[1] <= 7 && item[0] >= 0 && item[1] >= 0);
 }
 
-// Fills graph with all possible knight moves on a 7x7 board
-function fillGraph() {
-    for (let x = 0; x <= 7; x++) {
-        for (let y = 0; y <= 7; y++) {
-            const moves = getMoves([x, y]);
-            moves.forEach((move) => {
-                graph.addEdge([x, y], move);
-            })
-        }
+function knightMoves(start, end) {
+    // Create a queue and enqueues the start arguement.
+    const startNode = graph.addNode(start);
+    const queue = [startNode];
+    const visited = [];
+
+    while (queue.length) {
+        // Dequeues co-ordinate from from of queue.
+        const current = queue.shift();
+
+        // Marks the co-ordinate as visited and gets all possible moves.
+        visited.push(current.value);
+        const moves = getMoves(current.value);
+
+        // Creates a graph edge from current to all possible moves.
+        moves.forEach((move) => {
+            graph.addEdge(current.value, move);
+        })
+
+        // Gets a list of all adjacents and stops repeat visitors queueing.
+        const adjacents = current.getAdjacent();
+        adjacents.forEach((adjacent) => {
+            if (visited.includes(adjacent)) {
+                return adjacent;
+            }
+
+            // Queues adjacents and assigns a predecessor to each.
+            graph.getNode(adjacent).predecessor = current;
+            queue.push(graph.getNode(adjacent));
+        })
     }
+
+    // Builds an array by following predecessors from end to start.
+    const allMoves = [];
+    let node = graph.getNode(end);
+
+    while (node) {
+        if (node.predecessor) {
+            allMoves.unshift(node.value);
+        } else {
+            allMoves.unshift(node.value);
+        }
+
+        node = node.predecessor;
+    }
+    return allMoves;
 }
 
-// function knightMoves(start, end) {
+console.log(knightMoves([0, 0], [7, 7]));
 
-//     let moves = getMoves(start);
-
-//     graph.addNode(start);
-//     moves.forEach((move) => {
-//         graph.addEdge(start, move);
-//     })
-
-//     knightMoves(moves[0], end);
-// }
-
-
-// console.log(knightMoves([0, 0], [1, 1]));
-console.log(fillGraph())
-console.log(graph.nodes)
-console.log(graph.addNode([5, 3]).adjacents);
