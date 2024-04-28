@@ -1,7 +1,0 @@
-node_modules
-dist
-src
-eslint.config.mjs
-package.json
-package-lock.json
-webpack.config.js
